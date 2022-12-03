@@ -21,10 +21,10 @@ public class Basket implements Serializable {
         this.amount = amount;
     }
 
-    public void addToCart(int productNumber, int productCount) {
-        this.amount[productNumber - 1] += productCount;
+    public void addToCart(int productNumber, int productAmount) {
+        this.amount[productNumber - 1] += productAmount;
         this.currentPrice = price[productNumber - 1];
-        this.totalAmount = productCount * currentPrice;
+        this.totalAmount = productAmount * currentPrice;
         this.totalSum += totalAmount;
     }
 
@@ -37,54 +37,70 @@ public class Basket implements Serializable {
         System.out.println("Итого: " + totalSum);
     }
 
-    public void saveTxt(File textFile) throws IOException {
-        try (Writer writer = new FileWriter(textFile)) {
-            for (String product : products) {
-                writer.write(product + " ");
-            }
-            writer.write("\n");
-            for (int value : price) {
-                writer.write(value + " ");
-            }
-            writer.write("\n");
-            for (int value : amount) {
-                writer.write(value + " ");
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public void saveTxt(File textFile) throws IOException {
+//        try (Writer writer = new FileWriter(textFile)) {
+//            for (String product : products) {
+//                writer.write(product + " ");
+//            }
+//            writer.write("\n");
+//            for (int value : price) {
+//                writer.write(value + " ");
+//            }
+//            writer.write("\n");
+//            for (int value : amount) {
+//                writer.write(value + " ");
+//            }
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-    public static Basket loadFromTextFile(File textFile) {
-        try (BufferedReader reader = new BufferedReader(new FileReader(textFile))) {
-            String[] products = reader.readLine().split(" ");
-            String[] priceString = reader.readLine().split(" ");
-            String[] amountString = reader.readLine().split(" ");
-            int[] price = new int[priceString.length];
-            int[] amount = new int[amountString.length];
-            for (int i = 0; i < price.length; i++) {
-                price[i] = Integer.parseInt(priceString[i]);
-            }
+//    public static Basket loadFromTextFile(File textFile) {
+//        try (BufferedReader reader = new BufferedReader(new FileReader(textFile))) {
+//            String[] products = reader.readLine().split(" ");
+//            String[] priceString = reader.readLine().split(" ");
+//            String[] amountString = reader.readLine().split(" ");
+//            int[] price = new int[priceString.length];
+//            int[] amount = new int[amountString.length];
+//            for (int i = 0; i < price.length; i++) {
+//                price[i] = Integer.parseInt(priceString[i]);
+//            }
+//
+//            for (int i = 0; i < amount.length; i++) {
+//                amount[i] = Integer.parseInt(amountString[i]);
+//            }
+//            return new Basket(products, price, amount);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-            for (int i = 0; i < amount.length; i++) {
-                amount[i] = Integer.parseInt(amountString[i]);
-            }
-            return new Basket(products, price, amount);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+//    public void saveBin(File binFile) {
+//        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(binFile))) {
+//            oos.writeObject(this);
+//        } catch (IOException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
 
-    public void saveBin(File binFile) {
-        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(binFile))) {
+//    public static Basket loadFromBinFile(File binFile) {
+//        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(binFile))) {
+//            return (Basket) ois.readObject();
+//        } catch (IOException | ClassNotFoundException e) {
+//            throw new RuntimeException(e);
+//        }
+//    }
+
+    public void saveJson(File jsonFile) {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(jsonFile))) {
             oos.writeObject(this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Basket loadFromBinFile(File binFile) {
-        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(binFile))) {
+    public static Basket loadFromJsonFile(File jsonFile) {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(jsonFile))) {
             return (Basket) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);

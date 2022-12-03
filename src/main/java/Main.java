@@ -5,8 +5,10 @@ import java.util.Scanner;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        File file = new File("Basket.txt");
-        File binFile = new File("Basket.bin");
+        File jsonFile = new File("Basket.json");
+        File logFile = new File("log.csv");
+        
+        ClientLog clientLog = new ClientLog();
 
         Scanner scanner = new Scanner(System.in);
 
@@ -20,7 +22,7 @@ public class Main {
             System.out.println((i + 1) + ". " + products[i] + " - " + price[i] + " руб/шт");
         }
 
-        if (file.exists()) {
+        if (jsonFile.exists()) {
             System.out.println("\n" + "Обнаружен сохранённый спок продуктов");
             System.out.println("Продолжить? Введите да или нет");
         }
@@ -28,10 +30,10 @@ public class Main {
             String input = scanner.nextLine();
 
             int productNumber = 0;
-            int productCount = 0;
+            int productAmount = 0;
 
             if (input.equals("да")) {
-                basket = Basket.loadFromBinFile(binFile);
+                basket = Basket.loadFromJsonFile(jsonFile);
                 continue;
             } else if (input.equals("нет")) {
                 System.out.println("Введите номер продукта и количество через пробел");
@@ -44,13 +46,14 @@ public class Main {
 
             String[] parts = input.split(" ");
             productNumber = Integer.parseInt(parts[0]);
-            productCount = Integer.parseInt(parts[1]);
+            productAmount = Integer.parseInt(parts[1]);
+            clientLog.log(productNumber, productAmount);
 
-            basket.addToCart(productNumber, productCount);
+            basket.addToCart(productNumber, productAmount);
         }
-        basket.saveTxt(file);
-        basket.saveBin(binFile);
+        basket.saveJson(jsonFile);
         basket.printCart();
+        clientLog.exportAsCSV(logFile);
     }
 }
 
